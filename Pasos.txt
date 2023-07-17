@@ -67,3 +67,4 @@ python .\src\conexion_oracle.py
 
 
 
+.
