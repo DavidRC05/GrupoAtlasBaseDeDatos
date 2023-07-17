@@ -1,0 +1,56 @@
+(Pasos despues de clonar el proyecto por primera vez)
+
+Recomiendo que cuando corran los comandos los hagan uno por uno, para evitar 
+que si alguno falla se haga un desmadre.
+
+1.
+Para abrir estas terminales vayan a la parte de arriba y en terminal le dan "New terminal"
+Esto abre una terminal nueva, para abrir una de powershell busquen Windows PowerShell en Windows
+y con click derecho le dan run as administrator
+
+2.
+// Usar este comando para fijarse que ya este instalado python //
+(Terminal)
+python --version
+
+// En caso de que no este instalado, instalarlo aqui o verse un tutorial //
+ https://www.python.org/downloads/
+
+*NO HAGAN EL PASO 3, 4 Y 5
+ 3.
+// Esto es para poder correr el script del virtual env //
+(Powershell)
+Get-ExecutionPolicy (Esto es solo para revisar en modo esta el execution policy)
+Set-ExecutionPolicy Unrestricted
+Y
+
+4.
+// Setup del virtual env //
+(Terminal)
+--- Instala virtual env y crea el enviroment de python ---
+pip install virtualenv
+virtualenv -p python3 env
+--- Este comando activa el enviroment --- 
+.\env\Scripts\activate
+
+5.
+// Pone otra vez el execution policy en restricted para prevencion de viruses //
+(Powershell)
+Set-ExecutionPolicy Restricted
+Y
+
+6.
+// Instalacion de la libreria de oracle //
+(Terminal)
+pip install cx_Oracle
+
+7.
+// TODO ESTO ES PARA QUE SE PUEDA HACER LA CONEXION A LA BASE DE DATOS //
+(Terminal)
+--- Conectarse a sqlplus ---
+SQLPLUS / AS SYSDBA 
+--- Select para ver las plugable databases, en mi caso es ORCLPDB ---
+SELECT NAME, CON_ID FROM V$PBDS; 
+--- Esto es por si da un error ahi, poner ORCLPDB en open ---
+ALTER PLUGGABLE DATABASE ORCLPDB OPEN;
+exit
