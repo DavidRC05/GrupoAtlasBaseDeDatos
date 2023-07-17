@@ -12,12 +12,18 @@ y con click derecho le dan run as administrator
 // Usar este comando para fijarse que ya este instalado python //
 (Terminal)
 python --version
+O
+python3 --version
+ // Tambien asegurarse de que pip este instalado //
+pip --version
+o
+pip3 --version
 
 // En caso de que no este instalado, instalarlo aqui o verse un tutorial //
- https://www.python.org/downloads/
+https://www.python.org/downloads/  instalar
+https://www.youtube.com/watch?v=KtxCiaDjQgw&ab_channel=Kitflix tutorial hindu
 
-*NO HAGAN EL PASO 3, 4 Y 5
- 3.
+3.
 // Esto es para poder correr el script del virtual env //
 (Powershell)
 Get-ExecutionPolicy (Esto es solo para revisar en modo esta el execution policy)
@@ -55,12 +61,9 @@ SELECT NAME, CON_ID FROM V$PBDS;
 ALTER PLUGGABLE DATABASE ORCLPDB OPEN;
 exit
 
-9.
+8.
 // Para correr el archivo de python pongan este comando //
 python .\src\conexion_oracle.py
 
-8.
-// Configuren su correo y usuario de git antes de hacer commit //
-git config --global user.email "you@example.com" 
-git config --global user.name "Your Name" 
+
 
