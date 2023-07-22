@@ -84,6 +84,98 @@ CREATE TABLE FACTURAS (
     TOTAL NUMBER(10, 2),
     FOREIGN KEY (ID_CITA) REFERENCES CITAS(ID_CITA)
 );
+--Creacion de Tablas de Auditoria
+
+CREATE TABLE AUDITORIA_PACIENTES (
+    ID_AUDITORIA_PACIENTE NUMBER PRIMARY KEY,
+    ID_PACIENTE NUMBER,
+    NOMBRE VARCHAR2(50),
+    APELLIDO VARCHAR2(50),
+    FECHA_NACIMIENTO DATE,
+    GENERO CHAR(1),
+    DIRECCION VARCHAR2(200),
+    TELEFONO VARCHAR2(15),
+    CORREO_ELECTRONICO VARCHAR2(100),
+    FECHA_HORA TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ACCION VARCHAR2(50),
+    USUARIO VARCHAR2(100)
+);
+
+CREATE TABLE AUDITORIA_EMPLEADOS (
+    ID_AUDITORIA_EMPLEADO NUMBER PRIMARY KEY,
+    ID_EMPLEADO NUMBER,
+    NOMBRE_EMPLEADO VARCHAR2(50),
+    APELLIDO_EMPLEADO VARCHAR2(50),
+    CARGO VARCHAR2(50),
+    FECHA_CONTRATACION DATE,
+    SALARIO NUMBER(10,2),
+    FECHA_HORA TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ACCION VARCHAR2(50),
+    USUARIO VARCHAR2(100)
+);
+
+CREATE TABLE AUDITORIA_PROVEEDORES (
+    ID_AUDITORIA_PROVEEDOR NUMBER PRIMARY KEY,
+    ID_PROVEEDOR NUMBER,
+    NOMBRE_PROVEEDOR VARCHAR2 (50),
+    DIRECCION VARCHAR2(100),
+    CORREO_PROVEEDOR VARCHAR2(100),
+    FECHA_HORA TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ACCION VARCHAR2(50),
+    USUARIO VARCHAR2(100)
+);
+
+CREATE TABLE AUDITORIA_PRODUCTOS (
+    ID_AUDITORIA_PRODUCTO NUMBER PRIMARY KEY,
+    ID_PRODUCTO NUMBER,
+    ID_PROVEEDOR NUMBER,
+    CANTIDAD NUMBER,
+    DESCRIPCION VARCHAR2(100),
+    PRECIO_PRODUCTO NUMBER(10,2),
+    FECHA_HORA TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ACCION VARCHAR2(50),
+    USUARIO VARCHAR2(100)
+);
+
+CREATE TABLE AUDITORIA_TRATAMIENTOS (
+    ID_AUDITORIA_TRATAMIENTO NUMBER PRIMARY KEY,
+    ID_TRATAMIENTO NUMBER,
+    ID_PRODUCTO NUMBER,
+    DESCRIPCION VARCHAR2(100),
+    DURACION_ESTIMADA NUMBER,
+    PRECIO_TRATAMIENTO NUMBER(10,2),
+    FECHA_HORA TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ACCION VARCHAR2(50),
+    USUARIO VARCHAR2(100)
+);
+
+CREATE TABLE AUDITORIA_CITAS (
+    ID_AUDITORIA_CITA NUMBER PRIMARY KEY,
+    ID_CITA NUMBER,
+    ID_PACIENTE NUMBER,
+    ID_EMPLEADO NUMBER,
+    ID_TRATAMIENTO NUMBER,
+    FECHA_CITA DATE,
+    HORA_CITA TIMESTAMP,
+    OBSERVACIONES VARCHAR2(200),
+    FECHA_HORA TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ACCION VARCHAR2(50),
+    USUARIO VARCHAR2(100)
+);
+
+CREATE TABLE AUDITORIA_FACTURAS (
+    ID_AUDITORIA_FACTURA NUMBER PRIMARY KEY,
+    ID_FACTURA NUMBER,
+    ID_CITA NUMBER,
+    FECHA_EMISION DATE,
+    SUBTOTAL NUMBER(10, 2),
+    IMPUESTOS NUMBER(10, 2),
+    TOTAL NUMBER(10, 2),
+    FECHA_HORA TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ACCION VARCHAR2(50),
+    USUARIO VARCHAR2(100)
+);
+
 
 --Insercion a Tablas
 
@@ -158,19 +250,19 @@ VALUES (5, 5, 175, 'Medicamento E', 18.75);
 
 
 INSERT INTO TRATAMIENTOS (ID_TRATAMIENTO, ID_PRODUCTO, DESCRIPCION, DURACION_ESTIMADA, PRECIO_TRATAMIENTO)
-VALUES (1, 1, 'Tratamiento para la condición X', 30, 120.00);
+VALUES (1, 1, 'Tratamiento para la condiciï¿½n X', 30, 120.00);
 
 INSERT INTO TRATAMIENTOS (ID_TRATAMIENTO, ID_PRODUCTO, DESCRIPCION, DURACION_ESTIMADA, PRECIO_TRATAMIENTO)
-VALUES (2, 2, 'Tratamiento para la condición Y', 45, 200.00);
+VALUES (2, 2, 'Tratamiento para la condiciï¿½n Y', 45, 200.00);
 
 INSERT INTO TRATAMIENTOS (ID_TRATAMIENTO, ID_PRODUCTO, DESCRIPCION, DURACION_ESTIMADA, PRECIO_TRATAMIENTO)
-VALUES (3, 3, 'Tratamiento para la condición Z', 60, 300.00);
+VALUES (3, 3, 'Tratamiento para la condiciï¿½n Z', 60, 300.00);
 
 INSERT INTO TRATAMIENTOS (ID_TRATAMIENTO, ID_PRODUCTO, DESCRIPCION, DURACION_ESTIMADA, PRECIO_TRATAMIENTO)
-VALUES (4, 4, 'Tratamiento para la condición A', 20, 100.00);
+VALUES (4, 4, 'Tratamiento para la condiciï¿½n A', 20, 100.00);
 
 INSERT INTO TRATAMIENTOS (ID_TRATAMIENTO, ID_PRODUCTO, DESCRIPCION, DURACION_ESTIMADA, PRECIO_TRATAMIENTO)
-VALUES (5, 5, 'Tratamiento para la condición B', 40, 150.00);
+VALUES (5, 5, 'Tratamiento para la condiciï¿½n B', 40, 150.00);
 
 
 
@@ -184,7 +276,7 @@ INSERT INTO CITAS (ID_CITA, ID_PACIENTE, ID_EMPLEADO, ID_TRATAMIENTO, FECHA_CITA
 VALUES (3, 3, 3, 3, TO_DATE('2023-07-22', 'YYYY-MM-DD'), TO_TIMESTAMP('10:00:00', 'HH24:MI:SS'), 'Consulta general');
 
 INSERT INTO CITAS (ID_CITA, ID_PACIENTE, ID_EMPLEADO, ID_TRATAMIENTO, FECHA_CITA, HORA_CITA, OBSERVACIONES)
-VALUES (4, 4, 4, 4, TO_DATE('2023-07-23', 'YYYY-MM-DD'), TO_TIMESTAMP('11:00:00', 'HH24:MI:SS'), 'Revisión de tratamiento');
+VALUES (4, 4, 4, 4, TO_DATE('2023-07-23', 'YYYY-MM-DD'), TO_TIMESTAMP('11:00:00', 'HH24:MI:SS'), 'Revisiï¿½n de tratamiento');
 
 INSERT INTO CITAS (ID_CITA, ID_PACIENTE, ID_EMPLEADO, ID_TRATAMIENTO, FECHA_CITA, HORA_CITA, OBSERVACIONES)
 VALUES (5, 5, 5, 5, TO_DATE('2023-07-24', 'YYYY-MM-DD'), TO_TIMESTAMP('12:00:00', 'HH24:MI:SS'), 'Cita de emergencia');
@@ -211,10 +303,10 @@ VALUES (5, 5, TO_DATE('2023-07-24', 'YYYY-MM-DD'), 300.00, 60.00, 360.00);
 --Creacion de Usuarios
 
 CREATE USER C##ADMINISTRADOR IDENTIFIED BY administrador123;
-GRANT DBA TO ADMINISTRADOR;
+GRANT DBA TO C##ADMINISTRADOR;
 
 CREATE USER C##RECEPCIONISTA IDENTIFIED BY recepcionista123;
-GRANT CREATE SESSION, CREATE TABLE, INSERT ANY TABLE, UPDATE ANY TABLE TO RECEPCIONISTA;
+GRANT CREATE SESSION, CREATE TABLE, INSERT ANY TABLE, UPDATE ANY TABLE TO C##RECEPCIONISTA;
 
 --Restricciones de Tablas Y Usuarios 
 
@@ -240,7 +332,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS INSERTADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el paciente con el ID: ' || p_id_paciente);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el paciente con el ID: ' || p_id_paciente);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -264,10 +356,10 @@ BEGIN
     WHERE ID_PACIENTE = p_id_paciente;
 
     DBMS_OUTPUT.PUT_LINE('Nombre: ' || v_nombre || ', Apellido: ' || v_apellido || ', Fecha de Nacimiento: ' || TO_CHAR(v_fecha_nacimiento, 'DD-MON-YYYY') 
-                         || ', Género: ' || v_genero || ', Dirección: ' || v_direccion || ', Teléfono: ' || v_telefono || ', Correo electrónico: ' || v_correo_electronico);
+                         || ', Gï¿½nero: ' || v_genero || ', Direcciï¿½n: ' || v_direccion || ', Telï¿½fono: ' || v_telefono || ', Correo electrï¿½nico: ' || v_correo_electronico);
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el paciente con el ID: ' || p_id_paciente);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el paciente con el ID: ' || p_id_paciente);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -299,7 +391,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ACTUALIZADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el paciente con el ID: ' || p_id_paciente);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el paciente con el ID: ' || p_id_paciente);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -315,7 +407,7 @@ BEGIN
 DBMS_OUTPUT.PUT_LINE('DATOS ELIMINADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el paciente con el ID: ' || p_id_paciente);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el paciente con el ID: ' || p_id_paciente);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -345,7 +437,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS INSERTADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el empleado con el ID: ' || p_id_empleado);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el empleado con el ID: ' || p_id_empleado);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -366,11 +458,11 @@ BEGIN
     FROM EMPLEADOS
     WHERE ID_EMPLEADO = p_id_empleado;
 
-    DBMS_OUTPUT.PUT_LINE('Nombre Empleado: ' || v_nombre_empleado || ', Apellido Empleado: ' || v_apellido_empleado || ', Cargo: ' || v_cargo || ', Fecha Contratación: ' || TO_CHAR(v_fecha_contratacion, 'DD-MON-YYYY') 
+    DBMS_OUTPUT.PUT_LINE('Nombre Empleado: ' || v_nombre_empleado || ', Apellido Empleado: ' || v_apellido_empleado || ', Cargo: ' || v_cargo || ', Fecha Contrataciï¿½n: ' || TO_CHAR(v_fecha_contratacion, 'DD-MON-YYYY') 
                          || ', Salario: ' || v_salario);
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el empleado con el ID: ' || p_id_empleado);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el empleado con el ID: ' || p_id_empleado);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -398,7 +490,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ACTUALIZADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el empleado con el ID: ' || p_id_empleado);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el empleado con el ID: ' || p_id_empleado);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -414,7 +506,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ELIMINADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el empleado con el ID: ' || p_id_empleado);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el empleado con el ID: ' || p_id_empleado);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -442,7 +534,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS INSERTADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el proveedor con el ID: ' || p_id_proveedor);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el proveedor con el ID: ' || p_id_proveedor);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -461,11 +553,11 @@ BEGIN
     FROM PROVEEDORES
     WHERE ID_PROVEEDOR = p_id_proveedor;
 
-    DBMS_OUTPUT.PUT_LINE('Nombre Proveedor: ' || v_nombre_proveedor || ', Dirección: ' || v_direccion 
+    DBMS_OUTPUT.PUT_LINE('Nombre Proveedor: ' || v_nombre_proveedor || ', Direcciï¿½n: ' || v_direccion 
                          || ', Correo Proveedor: ' || v_correo_proveedor);
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el proveedor con el ID: ' || p_id_proveedor);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el proveedor con el ID: ' || p_id_proveedor);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -489,7 +581,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ACTUALIZADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el proveedor con el ID: ' || p_id_proveedor);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el proveedor con el ID: ' || p_id_proveedor);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -505,7 +597,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ELIMINADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el proveedor con el ID: ' || p_id_proveedor);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el proveedor con el ID: ' || p_id_proveedor);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -532,7 +624,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS INSERTADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el producto con el ID: ' || p_id_producto);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el producto con el ID: ' || p_id_producto);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -553,10 +645,10 @@ BEGIN
     WHERE ID_PRODUCTO = p_id_producto;
 
     DBMS_OUTPUT.PUT_LINE('ID Proveedor: ' || v_id_proveedor || ', Cantidad: ' || v_cantidad 
-                         || ', Descripción: ' || v_descripcion || ', Precio Producto: ' || v_precio_producto);
+                         || ', Descripciï¿½n: ' || v_descripcion || ', Precio Producto: ' || v_precio_producto);
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el producto con el ID: ' || p_id_producto);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el producto con el ID: ' || p_id_producto);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -582,7 +674,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ACTUALIZADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el producto con el ID: ' || p_id_producto);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el producto con el ID: ' || p_id_producto);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -598,7 +690,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ELIMINADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el producto con el ID: ' || p_id_producto);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el producto con el ID: ' || p_id_producto);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -623,7 +715,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS INSERTADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el tratamiento con el ID: ' || p_id_tratamiento);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el tratamiento con el ID: ' || p_id_tratamiento);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -643,11 +735,11 @@ BEGIN
     FROM TRATAMIENTOS
     WHERE ID_TRATAMIENTO = p_id_tratamiento;
 
-    DBMS_OUTPUT.PUT_LINE('ID Producto: ' || v_id_producto || ', Descripción: ' || v_descripcion 
-                         || ', Duración Estimada: ' || v_duracion_estimada || ', Precio Tratamiento: ' || v_precio_tratamiento);
+    DBMS_OUTPUT.PUT_LINE('ID Producto: ' || v_id_producto || ', Descripciï¿½n: ' || v_descripcion 
+                         || ', Duraciï¿½n Estimada: ' || v_duracion_estimada || ', Precio Tratamiento: ' || v_precio_tratamiento);
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el tratamiento con el ID: ' || p_id_tratamiento);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el tratamiento con el ID: ' || p_id_tratamiento);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -674,7 +766,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ACTUALIZADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el tratamiento con el ID: ' || p_id_tratamiento);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el tratamiento con el ID: ' || p_id_tratamiento);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -691,7 +783,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ELIMINADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró el tratamiento con el ID: ' || p_id_tratamiento);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ el tratamiento con el ID: ' || p_id_tratamiento);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -720,7 +812,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS INSERTADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró la cita con el ID: ' || p_id_cita);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ la cita con el ID: ' || p_id_cita);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -747,7 +839,7 @@ BEGIN
                          || ', Observaciones: ' || v_observaciones);
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró la cita con el ID: ' || p_id_cita);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ la cita con el ID: ' || p_id_cita);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -777,7 +869,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ACTUALIZADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró la cita con el ID: ' || p_id_cita);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ la cita con el ID: ' || p_id_cita);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -793,7 +885,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ELIMINADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró la cita con el ID: ' || p_id_cita);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ la cita con el ID: ' || p_id_cita);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -821,7 +913,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS INSERTADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró la factura con el ID: ' || p_id_factura);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ la factura con el ID: ' || p_id_factura);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -842,11 +934,11 @@ BEGIN
     FROM FACTURAS
     WHERE ID_FACTURA = p_id_factura;
 
-    DBMS_OUTPUT.PUT_LINE('ID Cita: ' || v_id_cita || ', Fecha de emisión: ' || TO_CHAR(v_fecha_emision, 'DD-MON-YYYY') 
+    DBMS_OUTPUT.PUT_LINE('ID Cita: ' || v_id_cita || ', Fecha de emisiï¿½n: ' || TO_CHAR(v_fecha_emision, 'DD-MON-YYYY') 
                          || ', Subtotal: ' || v_subtotal || ', Impuestos: ' || v_impuestos || ', Total: ' || v_total);
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró la factura con el ID: ' || p_id_factura);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ la factura con el ID: ' || p_id_factura);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -874,7 +966,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ACTUALIZADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró la factura con el ID: ' || p_id_factura);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ la factura con el ID: ' || p_id_factura);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -890,7 +982,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('DATOS ELIMINADOS CORRECTAMENTE');
 EXCEPTION 
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No se encontró la factura con el ID: ' || p_id_factura);
+        DBMS_OUTPUT.PUT_LINE('No se encontrï¿½ la factura con el ID: ' || p_id_factura);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
         RAISE;
@@ -899,6 +991,68 @@ END SP_DELETE_FACTURA;
 
 --10 Vistas
 
+CREATE VIEW VISTA_PACIENTES_FRECUENTES AS
+SELECT ID_PACIENTE, COUNT(*) AS NUMERO_VISITAS
+FROM CITAS
+GROUP BY ID_PACIENTE
+ORDER BY NUMERO_VISITAS DESC;
+
+
+
+CREATE VIEW VISTA_FACTURACION_POR_PACIENTE AS
+SELECT ID_PACIENTE, SUM(COSTO) AS FACTURACION_TOTAL
+FROM FACTURAS
+GROUP BY ID_PACIENTE;
+
+
+
+CREATE VIEW VISTA_CITAS_POR_MEDICO AS
+SELECT ID_MEDICO, COUNT(*) AS NUMERO_CITAS
+FROM CITAS
+GROUP BY ID_MEDICO;
+
+
+
+CREATE VIEW VISTA_PACIENTES_POR_EDAD AS
+SELECT 
+  CASE 
+     WHEN EDAD BETWEEN 0 AND 20 THEN '0-20'
+     WHEN EDAD BETWEEN 21 AND 40 THEN '21-40'
+     WHEN EDAD BETWEEN 41 AND 60 THEN '41-60'
+     ELSE '60+' 
+  END AS GRUPO_EDAD, COUNT(*) AS NUMERO_PACIENTES
+FROM PACIENTES
+GROUP BY GRUPO_EDAD;
+
+
+
+CREATE VIEW VISTA_PACIENTES_POR_GENERO AS
+SELECT GENERO, COUNT(*) AS NUMERO_PACIENTES
+FROM PACIENTES
+GROUP BY GENERO;
+
+
+
+CREATE VIEW VISTA_EMPLEADOS_POR_CARGO AS
+SELECT CARGO, COUNT(*) AS NUMERO_EMPLEADOS
+FROM EMPLEADOS
+GROUP BY CARGO;
+
+
+
+CREATE VIEW VISTA_TRATAMIENTOS_MAS_UTILIZADOS AS
+SELECT ID_TRATAMIENTO, COUNT(*) AS NUMERO_CITAS
+FROM CITAS
+GROUP BY ID_TRATAMIENTO
+ORDER BY NUMERO_CITAS DESC;
+
+
+
+CREATE VIEW VISTA_CITAS AS
+SELECT c.ID_CITA, p.NOMBRE, e.NOMBRE_EMPLEADO, c.FECHA_CITA, c.HORA_CITA
+FROM CITAS c
+JOIN PACIENTES p ON c.ID_PACIENTE = p.ID_PACIENTE
+JOIN EMPLEADOS e ON c.ID_EMPLEADO = e.ID_EMPLEADO;
 
 
 --15 Funciones
@@ -914,6 +1068,7 @@ END SP_DELETE_FACTURA;
 
 
 --15 Cursores
+
 
 
 
