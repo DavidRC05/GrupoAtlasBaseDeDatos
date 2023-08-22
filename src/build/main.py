@@ -4,11 +4,9 @@ import cx_Oracle
 from datetime import datetime
 
 from pathlib import Path
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, font, ttk, Label, messagebox
 
-#from tkinter import *
-# Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, font, ttk, Label
-
+# Para caminos relativos
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
@@ -49,11 +47,6 @@ def mostrarBuscarAccion():
             value = None
 
         entry_values[entry_name] = value
-        
-    
-
-def holaMundillo():
-    print("Hola MUNDOOO")
     
 def showCurrentEntries():
     
@@ -75,12 +68,12 @@ def randomID():
 def get_entry_value(entry_name):
     return tkinter_elements[entry_name][1].get().strip()
 
+# Funcion para crear un nuevo ID
 def generateID(id_type):
     connection = None
     cursor = None
     new_id = 0
     try:
-        # Replace these values with your database connection details
         connection = cx_Oracle.connect(
             user='C##ADMINISTRADOR',
             password='administrador123',
@@ -91,7 +84,7 @@ def generateID(id_type):
         cursor = connection.cursor()
         # Este codigo agarra el mayor employee_id y le suma 1, para que siempre los employees id sean mayor al anterior
         #-----------------------------------#
-        selected_value = tkinter_elements["DropdownMenu"][1].get()  # Get selected value from the combobox
+        selected_value = tkinter_elements["DropdownMenu"][1].get()  
         cursor.execute(f"SELECT MAX({id_type}) FROM C##ADMINISTRADOR.{selected_value}")
         max_employee_id = cursor.fetchone()[0]
         if max_employee_id is None:
@@ -112,11 +105,8 @@ def generateID(id_type):
 #===============================================#
 
 def accionBuscar():
-   
-        #============================================================#
-        #============================================================#
         
-        selected_value = tkinter_elements["DropdownMenu"][1].get()  # Get selected value from the combobox
+        selected_value = tkinter_elements["DropdownMenu"][1].get()  
         query =  table_queries[selected_value][0] + " where "
         conditions = []
         vacio = True
@@ -126,22 +116,30 @@ def accionBuscar():
             #--------------------#
             paciente_nombre = get_entry_value("PacienteEntry_Nombre")
             paciente_apellido1 = get_entry_value("PacienteEntry_Apellido1")
+            paciente_apellido2 = get_entry_value("PacienteEntry_Apellido2")
             paciente_correo = get_entry_value("PacienteEntry_Correo")
             paciente_genero = get_entry_value("PacienteEntry_Genero")
             paciente_año = get_entry_value("PacienteEntry_Año")
             paciente_mes = get_entry_value("PacienteEntry_Mes")
             paciente_dia = get_entry_value("PacienteEntry_Dia")
             fecha = paciente_año + "-" + paciente_mes + "-" + paciente_dia + " 00:00:00"
-            paciente_descripcion = tkinter_elements["PacienteEntry_Descripcion"][1].get("1.0", "end-1c").strip() #This is a text area
-            #---------------------#
-           
+            paciente_descripcion = tkinter_elements["PacienteEntry_Descripcion"][1].get("1.0", "end-1c").strip() 
             
+            #---------------------#
+        
             if paciente_nombre:
                 conditions.append(f"NOMBRE = '{paciente_nombre}'")
                 vacio = False
-            if paciente_apellido1:
-                conditions.append(f"APELLIDO = '{paciente_apellido1}'")
+            if paciente_apellido1 and paciente_apellido2:
+                conditions.append(f"APELLIDO = '{paciente_apellido1 + ' ' +paciente_apellido2}'")
                 vacio = False
+            else:
+                if paciente_apellido1:
+                    conditions.append(f"APELLIDO = '{paciente_apellido1}'")
+                    vacio = False
+                if paciente_apellido2:
+                    conditions.append(f"APELLIDO = '{paciente_apellido2}'")
+                    vacio = False               
             if paciente_correo:
                 conditions.append(f"CORREO_ELECTRONICO = '{paciente_correo}'")
                 vacio = False
@@ -157,9 +155,11 @@ def accionBuscar():
            
             
         if selected_value == "Empleados":
+            
             #--------------------#
             empleado_nombre = get_entry_value("EmpleadoEntry_Nombre")
             empleado_apellido1 = get_entry_value("EmpleadoEntry_Apellido1")
+            empleado_apellido2 = get_entry_value("EmpleadoEntry_Apellido2")
             empleado_cargo = get_entry_value("EmpleadoEntry_Cargo")
             empleado_año = get_entry_value("EmpleadoEntry_Año")
             empleado_mes = get_entry_value("EmpleadoEntry_Mes")
@@ -171,9 +171,16 @@ def accionBuscar():
             if empleado_nombre:
                 conditions.append(f"NOMBRE_EMPLEADO = '{empleado_nombre}'")
                 vacio = False
-            if empleado_apellido1:
-                conditions.append(f"APELLIDO_EMPLEADO = '{empleado_apellido1}'")
+            if empleado_apellido1 and empleado_apellido2:
+                conditions.append(f"APELLIDO_EMPLEADO = '{empleado_apellido1 + ' ' +empleado_apellido2}'")
                 vacio = False
+            else:
+                if empleado_apellido1:
+                    conditions.append(f"APELLIDO_EMPLEADO = '{empleado_apellido1}'")
+                    vacio = False
+                if empleado_apellido2:
+                    conditions.append(f"APELLIDO_EMPLEADO = '{empleado_apellido2}'")
+                    vacio = False 
             if empleado_cargo:
                 conditions.append(f"CARGO = '{empleado_cargo}'")
                 vacio = False
@@ -185,6 +192,7 @@ def accionBuscar():
                 vacio = False
        
         if selected_value == "Proveedores":
+            
             #--------------------#
             proveedor_nombre = get_entry_value("ProveedorEntry_Nombre")
             proveedor_direccion = get_entry_value("ProveedorEntry_Direccion") 
@@ -202,6 +210,7 @@ def accionBuscar():
                 vacio = False
        
         if selected_value == "Productos":
+            
             #--------------------#
             producto_cantidad = get_entry_value("ProductoEntry_Cantidad")
             producto_nombre = get_entry_value("ProductoEntry_Nombre")
@@ -305,9 +314,9 @@ def accionBuscar():
                 vacio = False
         
         #============================================================#
-        #============================================================#
           
         # Ejecutar query 
+        
         if conditions:
                 query += " AND ".join(conditions)  
         if not vacio:
@@ -321,15 +330,14 @@ def accionBuscar():
 #===============================================#
 
 def accionAgregar():
-    selected_value = tkinter_elements["DropdownMenu"][1].get()  # Get selected value from the combobox
-    #conditions = []
-    #vacio = True
-
+    
+    selected_value = tkinter_elements["DropdownMenu"][1].get()  
     if selected_value == "Pacientes":
                         
         #--------------------#
         paciente_nombre = get_entry_value("PacienteEntry_Nombre")
         paciente_apellido1 = get_entry_value("PacienteEntry_Apellido1")
+        paciente_apellido2 = get_entry_value("PacienteEntry_Apellido2")
         paciente_correo = get_entry_value("PacienteEntry_Correo")
         paciente_genero = get_entry_value("PacienteEntry_Genero")
         paciente_año = get_entry_value("PacienteEntry_Año")
@@ -338,11 +346,20 @@ def accionAgregar():
         fecha = paciente_año + "-" + paciente_mes + "-" + paciente_dia 
         paciente_descripcion = tkinter_elements["PacienteEntry_Descripcion"][1].get("1.0", "end-1c").strip() 
         #--------------------#
+        if paciente_apellido1 and paciente_apellido2:
+                apellido = paciente_apellido1 + ' ' +paciente_apellido2            
+        else:
+                if paciente_apellido1:
+                    apellido = paciente_apellido1
+                if paciente_apellido2:
+                    apellido = paciente_apellido2
+                    
+                    
         if paciente_nombre and paciente_apellido1 and paciente_correo and paciente_genero:
             query = f"""
             INSERT INTO 
             C##ADMINISTRADOR.PACIENTES (ID_PACIENTE, NOMBRE, APELLIDO, FECHA_NACIMIENTO, GENERO, DIRECCION, TELEFONO, CORREO_ELECTRONICO)
-            VALUES ({generateID('ID_PACIENTE')}, '{paciente_nombre}', '{paciente_apellido1}', TO_DATE('{fecha}','YYYY-MM-DD'), '{paciente_genero}', '{paciente_descripcion}', '8802-9999', '{paciente_correo}')"""    
+            VALUES ({generateID('ID_PACIENTE')}, '{paciente_nombre}', '{apellido}', TO_DATE('{fecha}','YYYY-MM-DD'), '{paciente_genero}', '{paciente_descripcion}', '8802-9999', '{paciente_correo}')"""    
             queryAndCommit(query)
       
     
@@ -351,19 +368,29 @@ def accionAgregar():
         #--------------------#
         empleado_nombre = get_entry_value("EmpleadoEntry_Nombre")
         empleado_apellido1 = get_entry_value("EmpleadoEntry_Apellido1")
+        empleado_apellido2 = get_entry_value("EmpleadoEntry_Apellido2")
         empleado_cargo = get_entry_value("EmpleadoEntry_Cargo")
         empleado_año = get_entry_value("EmpleadoEntry_Año")
         empleado_mes = get_entry_value("EmpleadoEntry_Mes")
         empleado_dia = get_entry_value("EmpleadoEntry_Dia")
         fecha = empleado_año + "-" + empleado_mes + "-" + empleado_dia
         empleado_salario = get_entry_value("EmpleadoEntry_Salario")
-        
         #---------------------#
+        
+        if empleado_apellido1 and empleado_apellido2:
+                apellido = empleado_apellido1 + ' ' +empleado_apellido2            
+        else:
+                if empleado_apellido1:
+                    apellido = empleado_apellido1
+                if empleado_apellido2:
+                    apellido = empleado_apellido2
+                    
+                    
         if empleado_nombre and empleado_apellido1 and empleado_cargo and empleado_salario:
             query = f"""
             INSERT INTO 
             C##ADMINISTRADOR.EMPLEADOS (ID_EMPLEADO, NOMBRE_EMPLEADO, APELLIDO_EMPLEADO, CARGO, FECHA_CONTRATACION, SALARIO)
-            VALUES ({generateID('ID_EMPLEADO')}, '{empleado_nombre}', '{empleado_apellido1}', '{empleado_cargo}', TO_DATE('{fecha}','YYYY-MM-DD'), {empleado_salario})
+            VALUES ({generateID('ID_EMPLEADO')}, '{empleado_nombre}', '{apellido}', '{empleado_cargo}', TO_DATE('{fecha}','YYYY-MM-DD'), {empleado_salario})
             """    
             queryAndCommit(query)
        
@@ -464,8 +491,6 @@ def accionAgregar():
 #                   MODIFICAR                   # 
 #===============================================#
 
-    
-
 def startModifyQuery(valorYcolumna):
     selected_value = tkinter_elements["DropdownMenu"][1].get()
     query = f"UPDATE C##ADMINISTRADOR.{selected_value} SET" 
@@ -502,10 +527,21 @@ def accionModificar():
     selected_value = tkinter_elements["DropdownMenu"][1].get()
     
     if selected_value == "Pacientes":
-                        
+        
+        apellido1 = get_entry_value("PacienteEntry_Apellido1")
+        apellido2 = get_entry_value("PacienteEntry_Apellido2")
+        
+        if apellido1 and apellido2:
+                apellido = apellido1 + ' ' +apellido2
+        else:
+                if apellido1:
+                    apellido = apellido1
+                if apellido2:
+                    apellido = apellido2
+                    
         valorYcolumna = [
             (get_entry_value("PacienteEntry_Nombre"), "NOMBRE", 0),
-            (get_entry_value("PacienteEntry_Apellido1"), "APELLIDO", 0),
+            (apellido, "APELLIDO", 0),
             (get_entry_value("PacienteEntry_Correo"), "CORREO_ELECTRONICO", 0),
             (get_entry_value("PacienteEntry_Genero"), "GENERO", 0),
             (tkinter_elements["PacienteEntry_Descripcion"][1].get("1.0", "end-1c").strip(), "DIRECCION", 0)
@@ -522,7 +558,7 @@ def accionModificar():
         
         # este va a aparte porque es diferente a los otros datos
         if paciente_año and paciente_mes and paciente_dia:
-                query += agregarComaFecha(query,f", FECHA_NACIMIENTO = TO_DATE('{fecha}', 'YYYY-MM-DD')")
+                query += agregarComaFecha(query,f" FECHA_NACIMIENTO = TO_DATE('{fecha}', 'YYYY-MM-DD')")
         
         # agregar el where
         if get_entry_value("generalIdEntry"):      
@@ -530,10 +566,21 @@ def accionModificar():
             queryAndCommit(query)
     
     if selected_value == "Empleados":
+            
+            apellido1 = get_entry_value("EmpleadoEntry_Apellido1")
+            apellido2 = get_entry_value("EmpleadoEntry_Apellido2")
         
+            if apellido1 and apellido2:
+                apellido = apellido1 + ' ' +apellido2
+            else:
+                if apellido1:
+                    apellido = apellido1
+                if apellido2:
+                    apellido = apellido2
+                    
             valorYcolumna = [
             (get_entry_value("EmpleadoEntry_Nombre"), "NOMBRE_EMPLEADO", 0),
-            (get_entry_value("EmpleadoEntry_Apellido1"), "APELLIDO_EMPLEADO", 0),
+            (apellido, "APELLIDO_EMPLEADO", 0),
             (get_entry_value("EmpleadoEntry_Cargo"), "CARGO", 0),
             (get_entry_value("EmpleadoEntry_Salario"), "SALARIO", 1)
             ]
@@ -548,7 +595,7 @@ def accionModificar():
             
             # este va a aparte porque es diferente a los otros datos
             if empleado_año and empleado_mes and empleado_dia:
-                query += agregarComaFecha(query,f", FECHA_CONTRATACION = TO_DATE('{fecha}', 'YYYY-MM-DD')")
+                query += agregarComaFecha(query,f" FECHA_CONTRATACION = TO_DATE('{fecha}', 'YYYY-MM-DD')")
         
             if get_entry_value("generalIdEntry"):      
                 query += f" WHERE ID_EMPLEADO = {get_entry_value('generalIdEntry')}"
@@ -647,7 +694,7 @@ def accionModificar():
         query = startModifyQuery(valorYcolumna)
         
         if factura_año and factura_mes and factura_dia:
-            query += agregarComaFecha(query,f", FECHA_EMISION = TO_DATE('{fecha}', 'YYYY-MM-DD')")
+            query += agregarComaFecha(query,f" FECHA_EMISION = TO_DATE('{fecha}', 'YYYY-MM-DD')")
             
         if get_entry_value("generalIdEntry"):      
             query += f" WHERE ID_FACTURA = {get_entry_value('generalIdEntry')}"
@@ -657,6 +704,12 @@ def accionModificar():
 #                    DELETE                     # 
 #===============================================#
 
+def confirmacionBorrado():
+    result = messagebox.askyesno("Confirmation","¿Seguro que quieres borrar este dato?")
+    if result:
+        return True
+    return False
+        
 def accionBorrar():
     
     selected_value = tkinter_elements["DropdownMenu"][1].get()
@@ -666,44 +719,51 @@ def accionBorrar():
         
         if get_entry_value("generalIdEntry"):      
             query += f"ID_PACIENTE = {get_entry_value('generalIdEntry')}"
-            queryAndCommit(query)
+            if confirmacionBorrado():
+                queryAndCommit(query)
         
     if selected_value == "Empleados":
         
         if get_entry_value("generalIdEntry"):      
             query += f"ID_EMPLEADO = {get_entry_value('generalIdEntry')}"
-            queryAndCommit(query)
+            if confirmacionBorrado():
+                queryAndCommit(query)
     
        
     if selected_value == "Proveedores":
         
         if get_entry_value("generalIdEntry"):      
             query += f"ID_PROVEEDOR = {get_entry_value('generalIdEntry')}"
-            queryAndCommit(query)
+            if confirmacionBorrado():
+                queryAndCommit(query)
     
     if selected_value == "Productos":
         
         if get_entry_value("generalIdEntry"):      
             query += f"ID_PRODUCTO = {get_entry_value('generalIdEntry')}"
-            queryAndCommit(query)
+            if confirmacionBorrado():
+                queryAndCommit(query)
     
     if selected_value == "Tratamientos":
         
         if get_entry_value("generalIdEntry"):      
             query += f" ID_TRATAMIENTO = {get_entry_value('generalIdEntry')}"
-            queryAndCommit(query)
+            if confirmacionBorrado():
+                queryAndCommit(query)
     
     if selected_value == "Citas":
         
         if get_entry_value("generalIdEntry"):      
             query += f"ID_CITA = {get_entry_value('generalIdEntry')}"
-            queryAndCommit(query)
+            if confirmacionBorrado():
+                queryAndCommit(query)
     
     if selected_value == "Facturas":
         
         if get_entry_value("generalIdEntry"):      
             query += f"ID_FACTURA = {get_entry_value('generalIdEntry')}"
-            queryAndCommit(query)
+            if confirmacionBorrado():
+                queryAndCommit(query)
             
 # ------ Execute Queries and update table ------------ #
     
@@ -736,8 +796,6 @@ def queryAndCommit(query):
     updateTreeView(tkinter_elements["Tabla"][1], table_queries[selected_value][1], table_queries[selected_value][0])
     
 #--- FABRICAS DE WIDGETS ---#
-# "C:\Users\Arturo\Desktop\Atlas_LBD\build\assets\frame0\BtnLogo.png"
-# C:\Users\Arturo\Desktop\Atlas_LBD\GrupoAtlasBaseDeDatos\src\build\assets\frame0\BtnLogo.png
       
 def createImage( name, x, y ):
     image_image = PhotoImage(file=relative_to_assets(name+".png"))
@@ -840,7 +898,7 @@ def updateTreeView(tree, columnas, query):
     connection = None
     cursor = None
     try:
-        # Replace these values with your database connection details
+        # Datos de la conexion a la base de datos
         connection = cx_Oracle.connect(
             user='C##ADMINISTRADOR',
             password='administrador123',
@@ -862,30 +920,30 @@ def updateTreeView(tree, columnas, query):
         if connection:
             connection.close() 
             
-    # Clear existing column headings
+    # Quitar columnas existentes
     for col in tree['columns']:
         tree.heading(col, text="")
 
-    # Set new column headings
+    # Poner nuevas columnas
     for idx, col in enumerate(columnas):
         tree.heading(idx, text=col)    
             
-    # Clear existing data in the table
+    # Borrar datos en la tabla
     for item in tree.get_children():
         tree.delete(item)
     
-    # Populate table with new data
+    # Poner nuevos datos
     if data is None:
         print("Query returned no data.")
         return
     
     for row in data:
-        #print(row) for debuggin
+        #print(row) #for debuggin
         tree.insert("", "end", values=row)
 
-########################################
-#--- CLINIC CARE UI PRODUCTION LINE ---#
-########################################
+##############################
+#--- UI WIDGET PRODUCTION ---#
+##############################
 
 def createNavbar():
     # --------------- BUTTONS --------------- #
@@ -923,10 +981,9 @@ def createNavbar():
                           mostrarElementos(defaultCrud + ["BtnBorrarTabla", "generalIDtext", "generalIdEntry"] ),
                           showCurrentEntries()
                           ))
-    
-     
-    
+
     # --------------- IMAGENES -------------- #
+    
     createImage("BackGround", 480, 300)
     
 def createLandingPageBtns():   
@@ -1078,8 +1135,6 @@ def createFacturasEntries ():
     createEntry ("FacturaEntry_Impuestos",           576, 232, 85, 17)
     createEntry ("FacturaEntry_Subtotal",           752, 232, 85, 17)
 
-    
-    
 #== GLOBAL CODE ==#
 
 OUTPUT_PATH = Path(__file__).parent
@@ -1198,10 +1253,9 @@ photo_images = []
 
 # Queries y nombres de columnas
 
-
 QueryPacientes = [
-    "SELECT ID_PACIENTE, NOMBRE, APELLIDO, TO_CHAR(FECHA_NACIMIENTO, 'YYYY-MM-DD'), GENERO, DIRECCION, TELEFONO, CORREO_ELECTRONICO FROM C##ADMINISTRADOR.PACIENTES",
-        ["ID PACIENTE", "NOMBRE", "APELLIDO", "FECHA NACIMIENTO", "GENERO", "DIRECCION", "TELEFONO", "EMAIL"],
+    "SELECT ID_PACIENTE, NOMBRE, APELLIDO, TO_CHAR(FECHA_NACIMIENTO, 'YYYY-MM-DD'), GENERO, DIRECCION, CORREO_ELECTRONICO FROM C##ADMINISTRADOR.PACIENTES",
+        ["ID PACIENTE", "NOMBRE", "APELLIDO", "FECHA NACIMIENTO", "GENERO", "DESCRIPCION", "EMAIL"],
         "ID_PACIENTE"]
     
 QueryEmpleados = [
@@ -1211,17 +1265,17 @@ QueryEmpleados = [
 
 QueryProveedores = [
         "SELECT ID_PROVEEDOR, NOMBRE_PROVEEDOR, DIRECCION, CORREO_PROVEEDOR FROM C##ADMINISTRADOR.PROVEEDORES",
-        ["ID PROVEEDOR", "NOMBRE PROVEEDOR", "DIRECCION", "CORREO"],
+        ["ID PROVEEDOR", "NOMBRE", "DIRECCION", "CORREO"],
         "ID_PROVEEDOR"]
 
 QueryProductos = [
-        "SELECT ID_PRODUCTO, ID_PROVEEDOR, CANTIDAD, DESCRIPCION, PRECIO_PRODUCTO FROM C##ADMINISTRADOR.PRODUCTOS",
-        ["ID PRODUCTO", "ID PROVEEDOR", "CANTIDAD", "DESCRIPCION", "PRECIO"],
+        "SELECT ID_PRODUCTO, CANTIDAD, DESCRIPCION, PRECIO_PRODUCTO FROM C##ADMINISTRADOR.PRODUCTOS",
+        ["ID PRODUCTO", "CANTIDAD", "DESCRIPCION", "PRECIO"],
         "ID_PRODUCTO"]
 
 QueryTratamientos = [
-        "SELECT ID_TRATAMIENTO, ID_PRODUCTO, DESCRIPCION, DURACION_ESTIMADA, PRECIO_TRATAMIENTO FROM C##ADMINISTRADOR.TRATAMIENTOS",
-        ["ID TRATAMIENTO", "ID PRODUCTO", "DESCRIPCION", "DURACION ESTIMADA", "PRECIO"],
+        "SELECT ID_TRATAMIENTO, DESCRIPCION, DURACION_ESTIMADA, PRECIO_TRATAMIENTO FROM C##ADMINISTRADOR.TRATAMIENTOS",
+        ["ID TRATAMIENTO", "DESCRIPCION", "DURACION ESTIMADA", "PRECIO"],
         "ID_TRATAMIENTO"]
     
 QueryCitas = [
@@ -1233,7 +1287,8 @@ QueryFacturas = [
         "SELECT ID_FACTURA, ID_CITA, TO_CHAR(FECHA_EMISION, 'YYYY-MM-DD'), SUBTOTAL, IMPUESTOS, TOTAL FROM C##ADMINISTRADOR.FACTURAS",
         ["ID FACTURA", "ID CITA", "FECHA EMISION", "SUBTOTAL", "IMPUESTOS", "TOTAL"],
         "ID_FACTURA"]
-   
+
+# diccionario de las tablas y sus datos
 table_queries = {
     "Pacientes": QueryPacientes,
     "Empleados": QueryEmpleados,
