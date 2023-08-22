@@ -757,57 +757,49 @@ def confirmacionBorrado():
 def accionBorrar():
     
     selected_value = tkinter_elements["DropdownMenu"][1].get()
-    query = f"DELETE FROM C##ADMINISTRADOR.{selected_value} WHERE " 
+    id = int(get_entry_value('generalIdEntry'))
     
     if selected_value == "Pacientes":
         
-        if get_entry_value("generalIdEntry"):      
-            query += f"ID_PACIENTE = {get_entry_value('generalIdEntry')}"
+        if id:      
             if confirmacionBorrado():
-                queryAndCommit(query)
-        
+                storedProcedureAndCommit("SP_DELETE_PACIENTE",[id])
+                  
     if selected_value == "Empleados":
         
-        if get_entry_value("generalIdEntry"):      
-            query += f"ID_EMPLEADO = {get_entry_value('generalIdEntry')}"
+        if id:      
             if confirmacionBorrado():
-                queryAndCommit(query)
+                storedProcedureAndCommit("SP_DELETE_EMPLEADO",[id])
     
-       
     if selected_value == "Proveedores":
         
-        if get_entry_value("generalIdEntry"):      
-            query += f"ID_PROVEEDOR = {get_entry_value('generalIdEntry')}"
+        if id:      
             if confirmacionBorrado():
-                queryAndCommit(query)
+                storedProcedureAndCommit("SP_DELETE_PROVEEDOR",[id])
     
     if selected_value == "Productos":
         
-        if get_entry_value("generalIdEntry"):      
-            query += f"ID_PRODUCTO = {get_entry_value('generalIdEntry')}"
+        if id:      
             if confirmacionBorrado():
-                queryAndCommit(query)
-    
+                storedProcedureAndCommit("SP_DELETE_PRODUCTO",[id])
+                
     if selected_value == "Tratamientos":
         
-        if get_entry_value("generalIdEntry"):      
-            query += f" ID_TRATAMIENTO = {get_entry_value('generalIdEntry')}"
+        if id:      
             if confirmacionBorrado():
-                queryAndCommit(query)
+                storedProcedureAndCommit("SP_DELETE_TRATAMIENTO",[id])
     
     if selected_value == "Citas":
         
-        if get_entry_value("generalIdEntry"):      
-            query += f"ID_CITA = {get_entry_value('generalIdEntry')}"
+        if id:      
             if confirmacionBorrado():
-                queryAndCommit(query)
+                storedProcedureAndCommit("SP_DELETE_CITA",[id])
     
     if selected_value == "Facturas":
         
-        if get_entry_value("generalIdEntry"):      
-            query += f"ID_FACTURA = {get_entry_value('generalIdEntry')}"
+        if id:      
             if confirmacionBorrado():
-                queryAndCommit(query)
+                storedProcedureAndCommit("SP_DELETE_FACTURA",[id])
             
 # ------ Execute Queries and update table ------------ #
     
