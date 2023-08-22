@@ -36,9 +36,6 @@ def mostrarElementos(elementos_a_mostrar):
                 element.place(x=x, y=y, width=width, height=height)  
             else:
                 canvas.itemconfigure(element, state="normal")
-        
-                
-
                 
 def mostrarBuscarAccion():
     entry_values = {}
@@ -739,6 +736,8 @@ def queryAndCommit(query):
     updateTreeView(tkinter_elements["Tabla"][1], table_queries[selected_value][1], table_queries[selected_value][0])
     
 #--- FABRICAS DE WIDGETS ---#
+# "C:\Users\Arturo\Desktop\Atlas_LBD\build\assets\frame0\BtnLogo.png"
+# C:\Users\Arturo\Desktop\Atlas_LBD\GrupoAtlasBaseDeDatos\src\build\assets\frame0\BtnLogo.png
       
 def createImage( name, x, y ):
     image_image = PhotoImage(file=relative_to_assets(name+".png"))
@@ -747,7 +746,7 @@ def createImage( name, x, y ):
     tkinter_elements[name] = ("image", image) 
 
 def createImgButton( name, x, y, on_click_action):
-    image_image = PhotoImage(file=relative_to_assets(name+".png"))
+    image_image = PhotoImage(file=relative_to_assets(name+".png")) 
     photo_images.append(image_image)
     button = Button(canvas, image=image_image, borderwidth=0, highlightthickness=0,
                     command=on_click_action)
@@ -836,6 +835,8 @@ def createTreeView(name, queryInfo, width, height, x, y):
     tree.initial_coords = (x, y)
 
 def updateTreeView(tree, columnas, query):
+    selected_value = tkinter_elements["DropdownMenu"][1].get()
+    id_type = table_queries[selected_value][2]
     connection = None
     cursor = None
     try:
@@ -848,6 +849,7 @@ def updateTreeView(tree, columnas, query):
             encoding='UTF-8'
         ) 
         cursor = connection.cursor()
+        query += f" order by {id_type} desc"
         print(query)
         cursor.execute(query) 
         print("query ejecutado")
@@ -1082,7 +1084,7 @@ def createFacturasEntries ():
 
 OUTPUT_PATH = Path(__file__).parent
 
-IMAGE_DIRECTORY = os.getcwd() + "\\build\\assets\\frame0"
+IMAGE_DIRECTORY = os.getcwd() + "\\GrupoAtlasBaseDeDatos\\src\\build\\assets\\frame0"
 ASSETS_PATH = OUTPUT_PATH / Path(IMAGE_DIRECTORY)
 
 window = Tk()
@@ -1199,31 +1201,38 @@ photo_images = []
 
 QueryPacientes = [
     "SELECT ID_PACIENTE, NOMBRE, APELLIDO, TO_CHAR(FECHA_NACIMIENTO, 'YYYY-MM-DD'), GENERO, DIRECCION, TELEFONO, CORREO_ELECTRONICO FROM C##ADMINISTRADOR.PACIENTES",
-        ["ID PACIENTE", "NOMBRE", "APELLIDO", "FECHA NACIMIENTO", "GENERO", "DIRECCION", "TELEFONO", "EMAIL"]]
+        ["ID PACIENTE", "NOMBRE", "APELLIDO", "FECHA NACIMIENTO", "GENERO", "DIRECCION", "TELEFONO", "EMAIL"],
+        "ID_PACIENTE"]
     
 QueryEmpleados = [
         "SELECT ID_EMPLEADO, NOMBRE_EMPLEADO, APELLIDO_EMPLEADO, CARGO, TO_CHAR(FECHA_CONTRATACION, 'YYYY-MM-DD'), SALARIO FROM C##ADMINISTRADOR.EMPLEADOS",
-        ["ID EMPLEADO", "NOMBRE", "APELLIDO", "CARGO", "FECHA CONTRATACION", "SALARIO"]]
+        ["ID EMPLEADO", "NOMBRE", "APELLIDO", "CARGO", "FECHA CONTRATACION", "SALARIO"],
+        "ID_EMPLEADO"]
 
 QueryProveedores = [
         "SELECT ID_PROVEEDOR, NOMBRE_PROVEEDOR, DIRECCION, CORREO_PROVEEDOR FROM C##ADMINISTRADOR.PROVEEDORES",
-        ["ID PROVEEDOR", "NOMBRE PROVEEDOR", "DIRECCION", "CORREO"]]
+        ["ID PROVEEDOR", "NOMBRE PROVEEDOR", "DIRECCION", "CORREO"],
+        "ID_PROVEEDOR"]
 
 QueryProductos = [
         "SELECT ID_PRODUCTO, ID_PROVEEDOR, CANTIDAD, DESCRIPCION, PRECIO_PRODUCTO FROM C##ADMINISTRADOR.PRODUCTOS",
-        ["ID PRODUCTO", "ID PROVEEDOR", "CANTIDAD", "DESCRIPCION", "PRECIO"]]
+        ["ID PRODUCTO", "ID PROVEEDOR", "CANTIDAD", "DESCRIPCION", "PRECIO"],
+        "ID_PRODUCTO"]
 
 QueryTratamientos = [
         "SELECT ID_TRATAMIENTO, ID_PRODUCTO, DESCRIPCION, DURACION_ESTIMADA, PRECIO_TRATAMIENTO FROM C##ADMINISTRADOR.TRATAMIENTOS",
-        ["ID TRATAMIENTO", "ID PRODUCTO", "DESCRIPCION", "DURACION ESTIMADA", "PRECIO"]]
+        ["ID TRATAMIENTO", "ID PRODUCTO", "DESCRIPCION", "DURACION ESTIMADA", "PRECIO"],
+        "ID_TRATAMIENTO"]
     
 QueryCitas = [
         "SELECT ID_CITA, ID_PACIENTE, ID_EMPLEADO, ID_TRATAMIENTO, TO_CHAR(FECHA_CITA, 'YYYY-MM-DD'), TO_CHAR(HORA_CITA, 'HH24'), OBSERVACIONES FROM C##ADMINISTRADOR.CITAS",
-        ["ID CITA", "ID PACIENTE", "ID EMPLEADO", "ID TRATAMIENTO", "FECHA CITA", "HORA CITA", "OBSERVACIONES"]]
+        ["ID CITA", "ID PACIENTE", "ID EMPLEADO", "ID TRATAMIENTO", "FECHA CITA", "HORA CITA", "OBSERVACIONES"],
+        "ID_CITA"]
           
 QueryFacturas = [
         "SELECT ID_FACTURA, ID_CITA, TO_CHAR(FECHA_EMISION, 'YYYY-MM-DD'), SUBTOTAL, IMPUESTOS, TOTAL FROM C##ADMINISTRADOR.FACTURAS",
-        ["ID FACTURA", "ID CITA", "FECHA EMISION", "SUBTOTAL", "IMPUESTOS", "TOTAL"]]
+        ["ID FACTURA", "ID CITA", "FECHA EMISION", "SUBTOTAL", "IMPUESTOS", "TOTAL"],
+        "ID_FACTURA"]
    
 table_queries = {
     "Pacientes": QueryPacientes,

@@ -1,0 +1,11 @@
+1. Abrir la command line y corred los siguientes codigos
+
+sqlplus / as SYSDBA
+
+CREATE USER C##ADMINISTRADOR IDENTIFIED BY administrador123;
+
+GRANT DBA TO C##ADMINISTRADOR;
+
+2. Despues de eso abrir sqldeveloper y conectarse con ese usuario y password
+
+3. Correr todos los queries necesarios para crear los objetos en la base de datos.
