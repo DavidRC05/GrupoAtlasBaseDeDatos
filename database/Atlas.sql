@@ -1257,6 +1257,468 @@ END FNCT_CANTIDAD_DE_EMPLEADOS_POR_POSICION;
 
 --10 Paquetes
 
+CREATE SEQUENCE SEQ_CITAS
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+
+CREATE SEQUENCE SEQ_FACTURAS
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+
+CREATE SEQUENCE SEQ_PAGOS
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+
+CREATE SEQUENCE SEQ_PROVEEDORES
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+
+CREATE SEQUENCE SEQ_EMPLEADOS
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+
+CREATE SEQUENCE SEQ_PACIENTES
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+
+  CREATE SEQUENCE PRODUCTOS
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE PACKAGE PKG_CITAS AS
+  PROCEDURE CREAR_CITA(
+    p_id_paciente IN NUMBER,
+    p_id_empleado IN NUMBER,
+    p_id_tratamiento IN NUMBER,
+    p_fecha_cita IN DATE,
+    p_hora_cita IN TIMESTAMP,
+    p_observaciones IN VARCHAR2
+  );
+
+  PROCEDURE ACTUALIZAR_CITA(
+    p_id_cita IN NUMBER,
+    p_id_paciente IN NUMBER,
+    p_id_empleado IN NUMBER,
+    p_id_tratamiento IN NUMBER,
+    p_fecha_cita IN DATE,
+    p_hora_cita IN TIMESTAMP,
+    p_observaciones IN VARCHAR2
+  );
+
+  PROCEDURE ELIMINAR_CITA(p_id_cita IN NUMBER);
+
+  FUNCTION BUSCAR_CITA_PACIENTE(p_id_paciente IN NUMBER) RETURN SYS_REFCURSOR;
+  FUNCTION BUSCAR_CITA_EMPLEADO(p_id_empleado IN NUMBER) RETURN SYS_REFCURSOR;
+  FUNCTION BUSCAR_CITA_FECHA(p_fecha IN DATE) RETURN SYS_REFCURSOR;
+  
+  
+END PKG_CITAS;
+/
+
+CREATE OR REPLACE PACKAGE BODY PKG_CITAS AS
+  PROCEDURE CREAR_CITA(
+    p_id_paciente IN NUMBER,
+    p_id_empleado IN NUMBER,
+    p_id_tratamiento IN NUMBER,
+    p_fecha_cita IN DATE,
+    p_hora_cita IN TIMESTAMP,
+    p_observaciones IN VARCHAR2
+  ) AS
+  BEGIN
+    INSERT INTO CITAS (ID_CITA, ID_PACIENTE, ID_EMPLEADO, ID_TRATAMIENTO, FECHA_CITA, HORA_CITA, OBSERVACIONES)
+    VALUES (SEQ_CITAS.NEXTVAL, p_id_paciente, p_id_empleado, p_id_tratamiento, p_fecha_cita, p_hora_cita, p_observaciones);
+  END CREAR_CITA;
+
+  PROCEDURE ACTUALIZAR_CITA(
+    p_id_cita IN NUMBER,
+    p_id_paciente IN NUMBER,
+    p_id_empleado IN NUMBER,
+    p_id_tratamiento IN NUMBER,
+    p_fecha_cita IN DATE,
+    p_hora_cita IN TIMESTAMP,
+    p_observaciones IN VARCHAR2
+  ) AS
+  BEGIN
+    UPDATE CITAS
+    SET ID_PACIENTE = p_id_paciente,
+        ID_EMPLEADO = p_id_empleado,
+        ID_TRATAMIENTO = p_id_tratamiento,
+        FECHA_CITA = p_fecha_cita,
+        HORA_CITA = p_hora_cita,
+        OBSERVACIONES = p_observaciones
+    WHERE ID_CITA = p_id_cita;
+  END ACTUALIZAR_CITA;
+
+  PROCEDURE ELIMINAR_CITA(p_id_cita IN NUMBER) AS
+  BEGIN
+    DELETE FROM CITAS WHERE ID_CITA = p_id_cita;
+  END ELIMINAR_CITA;
+
+  FUNCTION BUSCAR_CITA_PACIENTE(p_id_paciente IN NUMBER) RETURN SYS_REFCURSOR AS
+    c_result SYS_REFCURSOR;
+  BEGIN
+    OPEN c_result FOR
+      SELECT * FROM CITAS WHERE ID_PACIENTE = p_id_paciente;
+    RETURN c_result;
+  END BUSCAR_CITA_PACIENTE;
+
+  FUNCTION BUSCAR_CITA_EMPLEADO(p_id_empleado IN NUMBER) RETURN SYS_REFCURSOR AS
+    c_result SYS_REFCURSOR;
+  BEGIN
+    OPEN c_result FOR
+      SELECT * FROM CITAS WHERE ID_EMPLEADO = p_id_empleado;
+    RETURN c_result;
+  END BUSCAR_CITA_EMPLEADO;
+
+  FUNCTION BUSCAR_CITA_FECHA(p_fecha IN DATE) RETURN SYS_REFCURSOR AS
+    c_result SYS_REFCURSOR;
+  BEGIN
+    OPEN c_result FOR
+      SELECT * FROM CITAS WHERE FECHA_CITA = p_fecha;
+    RETURN c_result;
+  END BUSCAR_CITA_FECHA;
+  
+
+END PKG_CITAS;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE PACKAGE PKG_INVENTARIOS AS
+  PROCEDURE REGISTRAR_ENTRADA_PRODUCTO(
+    p_id_producto IN NUMBER,
+    p_cantidad IN NUMBER
+  );
+
+  PROCEDURE REGISTRAR_SALIDA_PRODUCTO(
+    p_id_producto IN NUMBER,
+    p_cantidad IN NUMBER
+  );
+
+  FUNCTION OBTENER_STOCK_PRODUCTO(p_id_producto IN NUMBER) RETURN NUMBER;
+
+  PROCEDURE ACTUALIZAR_STOCK_TRATAMIENTO(
+    p_id_tratamiento IN NUMBER,
+    p_cantidad IN NUMBER
+  );
+
+  FUNCTION OBTENER_STOCK_TRATAMIENTO(p_id_tratamiento IN NUMBER) RETURN NUMBER;
+  
+  -- Otros procedimientos y funciones según necesidades
+  
+END PKG_INVENTARIOS;
+/
+CREATE OR REPLACE PACKAGE BODY PKG_INVENTARIOS AS
+  PROCEDURE REGISTRAR_ENTRADA_PRODUCTO(
+    p_id_producto IN NUMBER,
+    p_cantidad IN NUMBER
+  ) AS
+  BEGIN
+    UPDATE PRODUCTOS
+    SET CANTIDAD = CANTIDAD + p_cantidad
+    WHERE ID_PRODUCTO = p_id_producto;
+  END REGISTRAR_ENTRADA_PRODUCTO;
+
+  PROCEDURE REGISTRAR_SALIDA_PRODUCTO(
+    p_id_producto IN NUMBER,
+    p_cantidad IN NUMBER
+  ) AS
+  BEGIN
+    UPDATE PRODUCTOS
+    SET CANTIDAD = CANTIDAD - p_cantidad
+    WHERE ID_PRODUCTO = p_id_producto;
+  END REGISTRAR_SALIDA_PRODUCTO;
+
+  FUNCTION OBTENER_STOCK_PRODUCTO(p_id_producto IN NUMBER) RETURN NUMBER AS
+    v_stock NUMBER;
+  BEGIN
+    SELECT CANTIDAD INTO v_stock
+    FROM PRODUCTOS
+    WHERE ID_PRODUCTO = p_id_producto;
+
+    RETURN v_stock;
+  END OBTENER_STOCK_PRODUCTO;
+
+  PROCEDURE ACTUALIZAR_STOCK_TRATAMIENTO(
+    p_id_tratamiento IN NUMBER,
+    p_cantidad IN NUMBER
+  ) AS
+  BEGIN
+    UPDATE TRATAMIENTOS
+    SET DURACION_ESTIMADA = DURACION_ESTIMADA + p_cantidad
+    WHERE ID_TRATAMIENTO = p_id_tratamiento;
+  END ACTUALIZAR_STOCK_TRATAMIENTO;
+
+  FUNCTION OBTENER_STOCK_TRATAMIENTO(p_id_tratamiento IN NUMBER) RETURN NUMBER AS
+    v_stock NUMBER;
+  BEGIN
+    SELECT DURACION_ESTIMADA INTO v_stock
+    FROM TRATAMIENTOS
+    WHERE ID_TRATAMIENTO = p_id_tratamiento;
+
+    RETURN v_stock;
+  END OBTENER_STOCK_TRATAMIENTO;
+  
+  -- Implementa otros procedimientos y funciones según necesidades
+
+END PKG_INVENTARIOS;
+/
+
+
+
+
+
+
+
+
+CREATE OR REPLACE PACKAGE GESTION_PACIENTES AS
+    PROCEDURE REGISTRAR_PACIENTE(p_nombre IN VARCHAR2, p_apellido IN VARCHAR2, p_fecha_nacimiento IN DATE, p_genero IN CHAR,
+                                 p_direccion IN VARCHAR2, p_telefono IN VARCHAR2, p_correo IN VARCHAR2);
+    PROCEDURE ACTUALIZAR_PACIENTE(p_id_paciente IN NUMBER, p_nombre IN VARCHAR2, p_apellido IN VARCHAR2, p_fecha_nacimiento IN DATE,
+                                  p_genero IN CHAR, p_direccion IN VARCHAR2, p_telefono IN VARCHAR2, p_correo IN VARCHAR2);
+    PROCEDURE ELIMINAR_PACIENTE(p_id_paciente IN NUMBER);
+END GESTION_PACIENTES;
+/
+CREATE OR REPLACE PACKAGE BODY GESTION_PACIENTES AS
+    PROCEDURE REGISTRAR_PACIENTE(p_nombre IN VARCHAR2, p_apellido IN VARCHAR2, p_fecha_nacimiento IN DATE, p_genero IN CHAR,
+                                 p_direccion IN VARCHAR2, p_telefono IN VARCHAR2, p_correo IN VARCHAR2) IS
+    BEGIN
+        INSERT INTO PACIENTES (ID_PACIENTE, NOMBRE, APELLIDO, FECHA_NACIMIENTO, GENERO, DIRECCION, TELEFONO, CORREO_ELECTRONICO)
+        VALUES (SEQ_PACIENTES.NEXTVAL, p_nombre, p_apellido, p_fecha_nacimiento, p_genero, p_direccion, p_telefono, p_correo);
+        COMMIT;
+    END REGISTRAR_PACIENTE;
+
+    PROCEDURE ACTUALIZAR_PACIENTE(p_id_paciente IN NUMBER, p_nombre IN VARCHAR2, p_apellido IN VARCHAR2, p_fecha_nacimiento IN DATE,
+                                  p_genero IN CHAR, p_direccion IN VARCHAR2, p_telefono IN VARCHAR2, p_correo IN VARCHAR2) IS
+    BEGIN
+        UPDATE PACIENTES
+        SET NOMBRE = p_nombre, APELLIDO = p_apellido, FECHA_NACIMIENTO = p_fecha_nacimiento, GENERO = p_genero,
+            DIRECCION = p_direccion, TELEFONO = p_telefono, CORREO_ELECTRONICO = p_correo
+        WHERE ID_PACIENTE = p_id_paciente;
+        COMMIT;
+    END ACTUALIZAR_PACIENTE;
+
+    PROCEDURE ELIMINAR_PACIENTE(p_id_paciente IN NUMBER) IS
+    BEGIN
+        DELETE FROM PACIENTES WHERE ID_PACIENTE = p_id_paciente;
+        COMMIT;
+    END ELIMINAR_PACIENTE;
+END GESTION_PACIENTES;
+/
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE PACKAGE GESTION_EMPLEADOS AS
+    PROCEDURE CONTRATAR_EMPLEADO(p_nombre IN VARCHAR2, p_apellido IN VARCHAR2, p_cargo IN VARCHAR2, p_fecha_contratacion IN DATE, p_salario IN NUMBER);
+    PROCEDURE ACTUALIZAR_EMPLEADO(p_id_empleado IN NUMBER, p_nombre IN VARCHAR2, p_apellido IN VARCHAR2, p_cargo IN VARCHAR2,
+                                  p_fecha_contratacion IN DATE, p_salario IN NUMBER);
+    PROCEDURE DESPEDIR_EMPLEADO(p_id_empleado IN NUMBER);
+END GESTION_EMPLEADOS;
+/
+CREATE OR REPLACE PACKAGE BODY GESTION_EMPLEADOS AS
+    PROCEDURE CONTRATAR_EMPLEADO(p_nombre IN VARCHAR2, p_apellido IN VARCHAR2, p_cargo IN VARCHAR2, p_fecha_contratacion IN DATE, p_salario IN NUMBER) IS
+    BEGIN
+        INSERT INTO EMPLEADOS (ID_EMPLEADO, NOMBRE_EMPLEADO, APELLIDO_EMPLEADO, CARGO, FECHA_CONTRATACION, SALARIO)
+        VALUES (SEQ_EMPLEADOS.NEXTVAL, p_nombre, p_apellido, p_cargo, p_fecha_contratacion, p_salario);
+        COMMIT;
+    END CONTRATAR_EMPLEADO;
+
+    PROCEDURE ACTUALIZAR_EMPLEADO(p_id_empleado IN NUMBER, p_nombre IN VARCHAR2, p_apellido IN VARCHAR2, p_cargo IN VARCHAR2,
+                                  p_fecha_contratacion IN DATE, p_salario IN NUMBER) IS
+    BEGIN
+        UPDATE EMPLEADOS
+        SET NOMBRE_EMPLEADO = p_nombre, APELLIDO_EMPLEADO = p_apellido, CARGO = p_cargo, FECHA_CONTRATACION = p_fecha_contratacion, SALARIO = p_salario
+        WHERE ID_EMPLEADO = p_id_empleado;
+        COMMIT;
+    END ACTUALIZAR_EMPLEADO;
+
+    PROCEDURE DESPEDIR_EMPLEADO(p_id_empleado IN NUMBER) IS
+    BEGIN
+        DELETE FROM EMPLEADOS WHERE ID_EMPLEADO = p_id_empleado;
+        COMMIT;
+    END DESPEDIR_EMPLEADO;
+END GESTION_EMPLEADOS;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE PACKAGE GESTION_PROVEEDORES AS
+    PROCEDURE REGISTRAR_PROVEEDOR(p_nombre IN VARCHAR2, p_direccion IN VARCHAR2, p_correo IN VARCHAR2);
+    PROCEDURE ACTUALIZAR_PROVEEDOR(p_id_proveedor IN NUMBER, p_nombre IN VARCHAR2, p_direccion IN VARCHAR2, p_correo IN VARCHAR2);
+    PROCEDURE ELIMINAR_PROVEEDOR(p_id_proveedor IN NUMBER);
+END GESTION_PROVEEDORES;
+/
+CREATE OR REPLACE PACKAGE BODY GESTION_PROVEEDORES AS
+    PROCEDURE REGISTRAR_PROVEEDOR(p_nombre IN VARCHAR2, p_direccion IN VARCHAR2, p_correo IN VARCHAR2) IS
+    BEGIN
+        INSERT INTO PROVEEDORES (ID_PROVEEDOR, NOMBRE_PROVEEDOR, DIRECCION, CORREO_PROVEEDOR)
+        VALUES (SEQ_PROVEEDORES.NEXTVAL, p_nombre, p_direccion, p_correo);
+        COMMIT;
+    END REGISTRAR_PROVEEDOR;
+
+    PROCEDURE ACTUALIZAR_PROVEEDOR(p_id_proveedor IN NUMBER, p_nombre IN VARCHAR2, p_direccion IN VARCHAR2, p_correo IN VARCHAR2) IS
+    BEGIN
+        UPDATE PROVEEDORES
+        SET NOMBRE_PROVEEDOR = p_nombre, DIRECCION = p_direccion, CORREO_PROVEEDOR = p_correo
+        WHERE ID_PROVEEDOR = p_id_proveedor;
+        COMMIT;
+    END ACTUALIZAR_PROVEEDOR;
+
+    PROCEDURE ELIMINAR_PROVEEDOR(p_id_proveedor IN NUMBER) IS
+    BEGIN
+        DELETE FROM PROVEEDORES WHERE ID_PROVEEDOR = p_id_proveedor;
+        COMMIT;
+    END ELIMINAR_PROVEEDOR;
+END GESTION_PROVEEDORES;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE PACKAGE GESTION_PRODUCTOS AS
+    PROCEDURE REGISTRAR_PRODUCTO(p_id_proveedor IN NUMBER, p_cantidad IN NUMBER, p_descripcion IN VARCHAR2, p_precio IN NUMBER);
+    PROCEDURE ACTUALIZAR_PRODUCTO(p_id_producto IN NUMBER, p_id_proveedor IN NUMBER, p_cantidad IN NUMBER, p_descripcion IN VARCHAR2, p_precio IN NUMBER);
+    PROCEDURE ELIMINAR_PRODUCTO(p_id_producto IN NUMBER);
+END GESTION_PRODUCTOS;
+/
+CREATE OR REPLACE PACKAGE BODY GESTION_PRODUCTOS AS
+    PROCEDURE REGISTRAR_PRODUCTO(p_id_proveedor IN NUMBER, p_cantidad IN NUMBER, p_descripcion IN VARCHAR2, p_precio IN NUMBER) IS
+    BEGIN
+        INSERT INTO PRODUCTOS (ID_PRODUCTO, ID_PROVEEDOR, CANTIDAD, DESCRIPCION, PRECIO_PRODUCTO)
+        VALUES (SEQ_PRODUCTOS.NEXTVAL, p_id_proveedor, p_cantidad, p_descripcion, p_precio);
+        COMMIT;
+    END REGISTRAR_PRODUCTO;
+
+    PROCEDURE ACTUALIZAR_PRODUCTO(p_id_producto IN NUMBER, p_id_proveedor IN NUMBER, p_cantidad IN NUMBER, p_descripcion IN VARCHAR2, p_precio IN NUMBER) IS
+    BEGIN
+        UPDATE PRODUCTOS
+        SET ID_PROVEEDOR = p_id_proveedor, CANTIDAD = p_cantidad, DESCRIPCION = p_descripcion, PRECIO_PRODUCTO = p_precio
+        WHERE ID_PRODUCTO = p_id_producto;
+        COMMIT;
+    END ACTUALIZAR_PRODUCTO;
+
+    PROCEDURE ELIMINAR_PRODUCTO(p_id_producto IN NUMBER) IS
+    BEGIN
+        DELETE FROM PRODUCTOS WHERE ID_PRODUCTO = p_id_producto;
+        COMMIT;
+    END ELIMINAR_PRODUCTO;
+END GESTION_PRODUCTOS;
+/
+
+
+
+
+
+
+
+
+
+
 
 
 --5 Triggers
