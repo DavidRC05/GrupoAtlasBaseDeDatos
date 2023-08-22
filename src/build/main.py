@@ -1168,12 +1168,13 @@ def createFacturasEntries ():
 
 OUTPUT_PATH = Path(__file__).parent
 
-IMAGE_DIRECTORY = os.getcwd() + "\\GrupoAtlasBaseDeDatos\\src\\build\\assets\\frame0"
+IMAGE_DIRECTORY = os.getcwd() + "\\src\\build\\assets\\frame0"
 ASSETS_PATH = OUTPUT_PATH / Path(IMAGE_DIRECTORY)
 
 window = Tk()
 window.geometry("960x600")
 window.configure(bg = "#F9F9F9") 
+window.title("Clinic Care")
     
 canvas = Canvas(
     window,
