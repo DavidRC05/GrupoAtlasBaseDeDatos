@@ -362,159 +362,174 @@ def accionAgregar():
     
     selected_value = tkinter_elements["DropdownMenu"][1].get()  
     if selected_value == "Pacientes":
-                        
+                      
         #--------------------#
-        paciente_nombre = get_entry_value("PacienteEntry_Nombre")
-        paciente_apellido1 = get_entry_value("PacienteEntry_Apellido1")
-        paciente_apellido2 = get_entry_value("PacienteEntry_Apellido2")
-        paciente_correo = get_entry_value("PacienteEntry_Correo")
-        paciente_genero = get_entry_value("PacienteEntry_Genero")
-        paciente_año = get_entry_value("PacienteEntry_Año")
-        paciente_mes = get_entry_value("PacienteEntry_Mes")
-        paciente_dia = get_entry_value("PacienteEntry_Dia")
-        fecha = paciente_año + "-" + paciente_mes + "-" + paciente_dia 
-        paciente_descripcion = tkinter_elements["PacienteEntry_Descripcion"][1].get("1.0", "end-1c").strip() 
+        nombre = get_entry_value("PacienteEntry_Nombre")
+        apellido1 = get_entry_value("PacienteEntry_Apellido1")
+        apellido2 = get_entry_value("PacienteEntry_Apellido2")
+        correo = get_entry_value("PacienteEntry_Correo")
+        genero = get_entry_value("PacienteEntry_Genero")
+        año = int(get_entry_value("PacienteEntry_Año"))
+        mes = int(get_entry_value("PacienteEntry_Mes"))
+        dia = int(get_entry_value("PacienteEntry_Dia"))
+        descripcion = tkinter_elements["PacienteEntry_Descripcion"][1].get("1.0", "end-1c").strip() 
         #--------------------#
-        if paciente_apellido1 and paciente_apellido2:
-                apellido = paciente_apellido1 + ' ' +paciente_apellido2            
+        if apellido1 and apellido2:
+                apellido = apellido1 + ' ' +apellido2            
         else:
-                if paciente_apellido1:
-                    apellido = paciente_apellido1
-                if paciente_apellido2:
-                    apellido = paciente_apellido2
-                    
-                    
-        if paciente_nombre and paciente_apellido1 and paciente_correo and paciente_genero:
-            query = f"""
-            INSERT INTO 
-            C##ADMINISTRADOR.PACIENTES (ID_PACIENTE, NOMBRE, APELLIDO, FECHA_NACIMIENTO, GENERO, DIRECCION, TELEFONO, CORREO_ELECTRONICO)
-            VALUES ({generateID('ID_PACIENTE')}, '{paciente_nombre}', '{apellido}', TO_DATE('{fecha}','YYYY-MM-DD'), '{paciente_genero}', '{paciente_descripcion}', '8802-9999', '{paciente_correo}')"""    
-            queryAndCommit(query)
-      
+                if apellido1:
+                    apellido = apellido1
+                if apellido2:
+                    apellido = apellido2
+                            
+        if nombre and apellido1 and correo and genero:
+            
+            storedProcedureAndCommit(
+                "SP_INSERT_PACIENTE",[
+                generateID('ID_PACIENTE'),
+                nombre,
+                apellido,
+                cx_Oracle.Date(año, mes, dia),
+                genero, 
+                descripcion,
+                '8802-9999', 
+                correo
+                ])
     
     if selected_value == "Empleados":
         
         #--------------------#
-        empleado_nombre = get_entry_value("EmpleadoEntry_Nombre")
-        empleado_apellido1 = get_entry_value("EmpleadoEntry_Apellido1")
-        empleado_apellido2 = get_entry_value("EmpleadoEntry_Apellido2")
-        empleado_cargo = get_entry_value("EmpleadoEntry_Cargo")
-        empleado_año = get_entry_value("EmpleadoEntry_Año")
-        empleado_mes = get_entry_value("EmpleadoEntry_Mes")
-        empleado_dia = get_entry_value("EmpleadoEntry_Dia")
-        fecha = empleado_año + "-" + empleado_mes + "-" + empleado_dia
-        empleado_salario = get_entry_value("EmpleadoEntry_Salario")
+        nombre = get_entry_value("EmpleadoEntry_Nombre")
+        apellido1 = get_entry_value("EmpleadoEntry_Apellido1")
+        apellido2 = get_entry_value("EmpleadoEntry_Apellido2")
+        cargo = get_entry_value("EmpleadoEntry_Cargo")
+        año = int(get_entry_value("EmpleadoEntry_Año"))
+        mes = int(get_entry_value("EmpleadoEntry_Mes"))
+        dia = int(get_entry_value("EmpleadoEntry_Dia"))
+        salario = int(get_entry_value("EmpleadoEntry_Salario"))
         #---------------------#
         
-        if empleado_apellido1 and empleado_apellido2:
-                apellido = empleado_apellido1 + ' ' +empleado_apellido2            
+        if apellido1 and apellido2:
+                apellido = apellido1 + ' ' +apellido2            
         else:
-                if empleado_apellido1:
-                    apellido = empleado_apellido1
-                if empleado_apellido2:
-                    apellido = empleado_apellido2
+                if apellido1:
+                    apellido = apellido1
+                if apellido2:
+                    apellido = apellido2
                     
                     
-        if empleado_nombre and empleado_apellido1 and empleado_cargo and empleado_salario:
-            query = f"""
-            INSERT INTO 
-            C##ADMINISTRADOR.EMPLEADOS (ID_EMPLEADO, NOMBRE_EMPLEADO, APELLIDO_EMPLEADO, CARGO, FECHA_CONTRATACION, SALARIO)
-            VALUES ({generateID('ID_EMPLEADO')}, '{empleado_nombre}', '{apellido}', '{empleado_cargo}', TO_DATE('{fecha}','YYYY-MM-DD'), {empleado_salario})
-            """    
-            queryAndCommit(query)
+        if nombre and apellido1 and cargo and salario:
+            storedProcedureAndCommit("SP_INSERT_EMPLEADO", [
+            generateID('ID_EMPLEADO'),  
+            nombre,  
+            apellido, 
+            cargo,  
+            cx_Oracle.Date(año, mes, dia),  
+            salario  
+            ])
+           
        
     if selected_value == "Proveedores":
         
         #--------------------#
-        proveedor_nombre = get_entry_value("ProveedorEntry_Nombre")
-        proveedor_direccion = get_entry_value("ProveedorEntry_Direccion") 
-        proveedor_email = get_entry_value("ProveedorEntry_Email")
+        nombre = get_entry_value("ProveedorEntry_Nombre")
+        direccion = get_entry_value("ProveedorEntry_Direccion") 
+        email = get_entry_value("ProveedorEntry_Email")
         #---------------------#
-        if proveedor_nombre and proveedor_direccion and proveedor_email:
-            query = f"""
-            INSERT INTO 
-            C##ADMINISTRADOR.PROVEEDORES (ID_PROVEEDOR, NOMBRE_PROVEEDOR, DIRECCION, CORREO_PROVEEDOR)
-            VALUES ({generateID('ID_PROVEEDOR')}, '{proveedor_nombre}', '{proveedor_direccion}', '{proveedor_email}')  
-            """    
-            queryAndCommit(query)
+        if nombre and direccion and email:
+            storedProcedureAndCommit("SP_INSERT_PROVEEDOR", [
+            generateID('ID_PROVEEDOR'),  
+            nombre,  
+            direccion,  
+            email  
+        ])
        
     if selected_value == "Productos":
         
         #--------------------#
-        producto_cantidad = get_entry_value("ProductoEntry_Cantidad")
-        producto_nombre = get_entry_value("ProductoEntry_Nombre")
-        producto_precio = get_entry_value("ProductoEntry_Precio")
+        cantidad = int(get_entry_value("ProductoEntry_Cantidad"))
+        nombre = get_entry_value("ProductoEntry_Nombre")
+        precio = int(get_entry_value("ProductoEntry_Precio"))
         #---------------------#
        
-        if producto_cantidad and producto_nombre and producto_precio:
-            query = f"""
-            INSERT INTO 
-            C##ADMINISTRADOR.PRODUCTOS (ID_PRODUCTO, ID_PROVEEDOR, CANTIDAD, DESCRIPCION, PRECIO_PRODUCTO)
-            VALUES ({generateID('ID_PRODUCTO')}, {randomID()}, {producto_cantidad}, '{producto_nombre}', {producto_precio})
-            """    
-            queryAndCommit(query)
+        if cantidad and nombre and precio:
+            storedProcedureAndCommit(
+            "SP_INSERT_PRODUCTO",[
+            generateID('ID_PRODUCTO'),  # p_id_producto
+            randomID(),  # p_id_proveedor
+            cantidad,  # p_cantidad
+            nombre,  # p_descripcion
+            precio  # p_precio_producto
+            ])
                    
     if selected_value == "Tratamientos":
         
         #--------------------#
-        tratamiento_descripcion = tkinter_elements["TratamientoEntry_Descripcion"][1].get("1.0", "end-1c").strip()
-        tratamiento_duracion = get_entry_value("TratamientoEntry_DuracionEstimado")
-        tratamiento_precio = get_entry_value("TratamientoEntry_Precio")
+        descripcion = tkinter_elements["TratamientoEntry_Descripcion"][1].get("1.0", "end-1c").strip()
+        duracion = int(get_entry_value("TratamientoEntry_DuracionEstimado"))
+        precio = int(get_entry_value("TratamientoEntry_Precio"))
         #---------------------#
         
-        if tratamiento_descripcion and tratamiento_duracion and tratamiento_precio:
-            query = f"""
-            INSERT INTO 
-            C##ADMINISTRADOR.TRATAMIENTOS (ID_TRATAMIENTO, ID_PRODUCTO, DESCRIPCION, DURACION_ESTIMADA, PRECIO_TRATAMIENTO)
-            VALUES ({generateID('ID_TRATAMIENTO')}, {randomID()}, '{tratamiento_descripcion}', {tratamiento_duracion}, {tratamiento_precio})
-            """    
-            queryAndCommit(query)
+        if descripcion and duracion and precio:
+            storedProcedureAndCommit(
+            "SP_INSERT_TRATAMIENTO", [
+            generateID('ID_TRATAMIENTO'),  
+            1,  
+            descripcion,  
+            duracion,  
+            precio  
+        ])
             
        
     if selected_value == "Citas":
         
         #--------------------#
-        cita_paciente = get_entry_value("CitaEntry_Paciente")
-        cita_empleado = get_entry_value("CitaEntry_Empleado")
-        cita_tratamiento = get_entry_value("CitaEntry_Tratamiento")
-        cita_año = get_entry_value("CitaEntry_Año")
-        cita_mes = get_entry_value("CitaEntry_Mes")
-        cita_dia = get_entry_value("CitaEntry_Dia")
-        fecha = cita_año + "-" + cita_mes + "-" + cita_dia
-        cita_hora = get_entry_value("CitaEntry_Hora")
-        hora = cita_hora + ":00:00"
-        cita_observacion = tkinter_elements["CitaEntry_Observaciones"][1].get("1.0", "end-1c").strip() #This is a text area
+        paciente = int(get_entry_value("CitaEntry_Paciente"))
+        empleado = int(get_entry_value("CitaEntry_Empleado"))
+        tratamiento = int(get_entry_value("CitaEntry_Tratamiento"))
+        año = int(get_entry_value("CitaEntry_Año"))
+        mes = int(get_entry_value("CitaEntry_Mes"))
+        dia = int(get_entry_value("CitaEntry_Dia"))
+        hora = int(get_entry_value("CitaEntry_Hora"))
+        observacion = tkinter_elements["CitaEntry_Observaciones"][1].get("1.0", "end-1c").strip() #This is a text area
         #---------------------#
         
-        if cita_paciente and cita_empleado and cita_tratamiento and cita_observacion:
-            query = f"""
-            INSERT INTO 
-            C##ADMINISTRADOR.CITAS (ID_CITA, ID_PACIENTE, ID_EMPLEADO, ID_TRATAMIENTO, FECHA_CITA, HORA_CITA, OBSERVACIONES)
-            VALUES ({generateID('ID_CITA')}, {cita_paciente}, {cita_empleado}, {cita_tratamiento}, TO_DATE('{fecha}', 'YYYY-MM-DD'), TO_TIMESTAMP('{hora}', 'HH24:MI:SS'), '{cita_observacion}')
-            """    
-            queryAndCommit(query)
+        if paciente and empleado and tratamiento and observacion:
+            storedProcedureAndCommit(
+            "SP_INSERT_CITA", [
+            generateID('ID_CITA'),  
+            paciente,  
+            empleado, 
+            tratamiento,  
+            cx_Oracle.Date(año, mes, dia),  
+            cx_Oracle.Timestamp(año, mes, dia, hora, 0, 0),  
+            observacion  
+        ])
+    
      
        
     if selected_value == "Facturas":
         
         #--------------------#
-        factura_cita = get_entry_value("FacturaEntry_Cita")
-        factura_año = get_entry_value("FacturaEntry_Año")
-        factura_mes = get_entry_value("FacturaEntry_Mes")
-        factura_dia = get_entry_value("FacturaEntry_Dia")
-        fecha = factura_año + "-" + factura_mes + "-" + factura_dia
-        factura_subtotal = get_entry_value("FacturaEntry_Subtotal")
-        factura_impuestos = get_entry_value("FacturaEntry_Impuestos")
-        factura_total = get_entry_value("FacturaEntry_Total")
+        cita = int(get_entry_value("FacturaEntry_Cita"))
+        año = int(get_entry_value("FacturaEntry_Año"))
+        mes = int(get_entry_value("FacturaEntry_Mes"))
+        dia = int(get_entry_value("FacturaEntry_Dia"))
+        subtotal = int(get_entry_value("FacturaEntry_Subtotal"))
+        impuestos = int(get_entry_value("FacturaEntry_Impuestos"))
+        total = int(get_entry_value("FacturaEntry_Total"))
         #---------------------#
         
-        if factura_cita and factura_subtotal and factura_impuestos and factura_total:
-            query = f"""
-            INSERT INTO 
-            C##ADMINISTRADOR.FACTURAS (ID_FACTURA, ID_CITA, FECHA_EMISION, SUBTOTAL, IMPUESTOS, TOTAL)
-            VALUES ({generateID('ID_FACTURA')}, {factura_cita}, TO_DATE('{fecha}', 'YYYY-MM-DD'), {factura_subtotal}, {factura_impuestos}, {factura_total})
-            """    
-            queryAndCommit(query)
+        if cita and subtotal and impuestos and total:
+            storedProcedureAndCommit(
+                "SP_INSERT_FACTURA", [
+                generateID('ID_FACTURA'),  
+                cita,  
+                cx_Oracle.Date(año, mes, dia),  
+                subtotal,  
+                impuestos, 
+                total  
+            ])
 
 #===============================================#
 #                   MODIFICAR                   # 
