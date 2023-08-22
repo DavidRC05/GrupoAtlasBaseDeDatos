@@ -12,6 +12,35 @@ def relative_to_assets(path: str) -> Path:
 
 #--- ACCIONES PARA BOTONES ---#
 
+def storedProcedureAndCommit(sp,parameters):
+    connection = None
+    cursor = None
+    try:
+        # Replace these values with your database connection details
+        connection = cx_Oracle.connect(
+            user='C##ADMINISTRADOR',
+            password='administrador123',
+            dsn='localhost:1521/ORCL',
+            mode=cx_Oracle.SYSDBA,
+            encoding='UTF-8'
+        ) 
+        cursor = connection.cursor()
+        print(sp)   
+        cursor.callproc("C##ADMINISTRADOR."+sp,parameters)  
+    
+        connection.commit()
+        print("I executed and commited")
+    except cx_Oracle.Error as error:
+        print("Error:", error)
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close() 
+    
+    selected_value = tkinter_elements["DropdownMenu"][1].get()        
+    updateTreeView(tkinter_elements["Tabla"][1], table_queries[selected_value][1], table_queries[selected_value][0])
+
 def esconderElementosExcepto(elementos_a_mantener):
     
     navbar = ["BackGround", "BtnActualizar", "BtnBuscar", "BtnAgregar", "BtnBorrar", "BtnLogo"]
