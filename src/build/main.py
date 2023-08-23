@@ -506,8 +506,6 @@ def accionAgregar():
             observacion  
         ])
     
-     
-       
     if selected_value == "Facturas":
         
         #--------------------#
@@ -840,6 +838,8 @@ def createImage( name, x, y ):
     tkinter_elements[name] = ("image", image) 
 
 def createImgButton( name, x, y, on_click_action):
+    #"C:\Users\Arturo\Desktop\AAATlas\src\build\assets\frame0\BtnLogo.png"
+    #C:\Users\Arturo\Desktop\AAATlas\GrupoAtlasBaseDeDatos\src\build\assets\frame0\BtnAgregarMain.png
     image_image = PhotoImage(file=relative_to_assets(name+".png")) 
     photo_images.append(image_image)
     button = Button(canvas, image=image_image, borderwidth=0, highlightthickness=0,
@@ -1175,7 +1175,7 @@ def createFacturasEntries ():
 
 OUTPUT_PATH = Path(__file__).parent
 
-IMAGE_DIRECTORY = os.getcwd() + "\\src\\build\\assets\\frame0"
+IMAGE_DIRECTORY = os.getcwd() + "\\GrupoAtlasBaseDeDatos\\src\\build\\assets\\frame0"
 ASSETS_PATH = OUTPUT_PATH / Path(IMAGE_DIRECTORY)
 
 window = Tk()
