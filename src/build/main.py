@@ -570,6 +570,7 @@ def accionModificar():
     
     if selected_value == "Pacientes":
         
+        apellido = False
         apellido1 = get_entry_value("PacienteEntry_Apellido1")
         apellido2 = get_entry_value("PacienteEntry_Apellido2")
         
@@ -609,6 +610,7 @@ def accionModificar():
     
     if selected_value == "Empleados":
             
+            apellido = False #
             apellido1 = get_entry_value("EmpleadoEntry_Apellido1")
             apellido2 = get_entry_value("EmpleadoEntry_Apellido2")
         
@@ -1307,7 +1309,7 @@ QueryProveedores = [
 
 QueryProductos = [
         "SELECT ID_PRODUCTO, CANTIDAD, DESCRIPCION, PRECIO_PRODUCTO FROM C##ADMINISTRADOR.PRODUCTOS",
-        ["ID PRODUCTO", "CANTIDAD", "DESCRIPCION", "PRECIO"],
+        ["ID PRODUCTO", "CANTIDAD", "NOMBRE", "PRECIO"],
         "ID_PRODUCTO"]
 
 QueryTratamientos = [
