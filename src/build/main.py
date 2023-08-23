@@ -16,7 +16,7 @@ def storedProcedureAndCommit(sp,parameters):
     connection = None
     cursor = None
     try:
-        # Replace these values with your database connection details
+        # datos para conectarse
         connection = cx_Oracle.connect(
             user='C##ADMINISTRADOR',
             password='administrador123',
@@ -455,11 +455,11 @@ def accionAgregar():
         if cantidad and nombre and precio:
             storedProcedureAndCommit(
             "SP_INSERT_PRODUCTO",[
-            generateID('ID_PRODUCTO'),  # p_id_producto
-            randomID(),  # p_id_proveedor
-            cantidad,  # p_cantidad
-            nombre,  # p_descripcion
-            precio  # p_precio_producto
+            generateID('ID_PRODUCTO'), 
+            randomID(), 
+            cantidad,  
+            nombre, 
+            precio  
             ])
                    
     if selected_value == "Tratamientos":
@@ -564,7 +564,6 @@ def agregarComaFecha(query, string):
     return new_string
     
 def accionModificar():
-      # Get selected value from the combobox
     
     selected_value = tkinter_elements["DropdownMenu"][1].get()
     
@@ -610,7 +609,7 @@ def accionModificar():
     
     if selected_value == "Empleados":
             
-            apellido = False #
+            apellido = False 
             apellido1 = get_entry_value("EmpleadoEntry_Apellido1")
             apellido2 = get_entry_value("EmpleadoEntry_Apellido2")
         
@@ -807,7 +806,7 @@ def queryAndCommit(query):
     connection = None
     cursor = None
     try:
-        # Replace these values with your database connection details
+        # Datos para conectarse
         connection = cx_Oracle.connect(
             user='C##ADMINISTRADOR',
             password='administrador123',
@@ -1063,7 +1062,6 @@ def createCRUD ():
     
     #( name, x, y, size, width, on_select_action )
     createComboBox( "DropdownMenu", 280, 155, 12, 15 )
-    # Create the table
     createTreeView("Tabla", QueryPacientes, 790, 14, 85, 266)
  
     
@@ -1081,7 +1079,7 @@ def createBtnsTabla ():
     createButton( "BtnBorrarTabla", "Borrar", 20, 1, size, 520, 152, accionBorrar )
     # Text and entrie ID for BUSCAR AND BORRAR
     
-    #Turn this later into a function
+    #Convertir despues a funcion
     #----------------------------------------#
     generalIDtext = Label(canvas, text="ID:")
     generalIDtext.place(x=210, y=156)
